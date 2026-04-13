@@ -40,9 +40,10 @@ function Blogid() {
   }, [])
   
   return (
-    <div className='h-screen w-screen flex justify-center items-center p-4'>
-    <div className=' flex justify-center h-full w-full md:max-w-[70vw] shadow-md md:shadow-sm'>{blog &&
-      <Blog id={blog.id} title={blog.title} content={blog.content} username={blog.username} fullname={blog.fullname} authorid={blog.authorid} date = {blog.date} size=''/>
+    <div className='min-h-screen w-full flex justify-center items-start pt-12 md:pt-20 p-4 bg-slate-50'>
+    <div className='flex justify-center h-full w-full md:max-w-4xl'>
+      {blog &&
+      <Blog id={blog.id} title={blog.title} content={blog.content} username={blog.username} fullname={blog.fullname} authorid={blog.authorid} date={blog.date} size='text-lg leading-loose'/>
       }
     </div>  
     </div>

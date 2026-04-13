@@ -2,10 +2,14 @@ import Quote from '../components/Quote';
 import SignUpForm from '../components/SignUpForm';
 function Signup() {
   return (
-    <div className='flex h-screen flex-col md:flex-row w-screen min-h-screen'>
-    <SignUpForm type={"SignUp"}/>
-    <Quote />
-  </div>
+    <div className='flex h-screen flex-col md:flex-row w-full min-h-screen'>
+      <div className='w-full md:w-1/2 h-full'>
+        <SignUpForm type={"SignUp"}/>
+      </div>
+      <div className='w-full md:w-1/2 h-full'>
+        <Quote />
+      </div>
+    </div>
   );
 }
 

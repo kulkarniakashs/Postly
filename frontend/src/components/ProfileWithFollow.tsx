@@ -92,29 +92,32 @@ const ProfileWithFollow = (queryUser:
 
 
   return (
-    <div className="flex items-center space-x-4 p-4 border rounded-lg shadow-md gap-4 justify-center w-full">
-      {/* Profile Picture */}
-      <div className="flex items-center justify-center w-16 h-16 bg-blue-500 text-white rounded-full text-2xl font-bold">
-        {username && username.charAt(0).toUpperCase()}
-      </div>
+    <div className="flex flex-col sm:flex-row items-center sm:items-start p-8 bg-white border border-slate-100 rounded-3xl shadow-sm gap-6 justify-between w-full relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-primary-400 to-indigo-500 opacity-10"></div>
+      <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 z-10 w-full">
+        {/* Profile Picture */}
+        <div className="flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-500 to-indigo-600 text-white rounded-full text-4xl font-bold shadow-md border-4 border-white object-cover">
+          {username && username.charAt(0).toUpperCase()}
+        </div>
 
-      {/* User Info */}
-      <div>
-        <h2 className="text-lg font-semibold">{fullname}</h2>
-        <p className="text-gray-500">@{username}</p>
-      </div>
+        {/* User Info */}
+        <div className="text-center sm:text-left flex-1">
+          <h2 className="text-3xl font-outfit font-bold text-slate-800 tracking-tight">{fullname}</h2>
+          <p className="text-primary-600 font-inter font-medium text-lg">@{username}</p>
+        </div>
 
-      {/* Follow/Unfollow Button */}
-      <button
-        onClick={handleFollowClick}
-        className={`ml-auto px-4 py-2 rounded ${
-          isFollowing
-            ? "bg-red-500 text-white hover:bg-red-600"
-            : "bg-green-500 text-white hover:bg-green-600"
-        }`}
-      >
-        {isFollowing ? "Unfollow" : "Follow"}
-      </button>
+        {/* Follow/Unfollow Button */}
+        <button
+          onClick={handleFollowClick}
+          className={`mt-4 sm:mt-0 px-8 py-3 rounded-xl font-inter font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${
+            isFollowing
+              ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-red-500"
+              : "bg-primary-600 text-white hover:bg-primary-700"
+          }`}
+        >
+          {isFollowing ? "Unfollow" : "Follow"}
+        </button>
+      </div>
     </div>
   );
 };

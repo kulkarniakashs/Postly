@@ -1,1 +1,1 @@
-export const backend : string = "https://backend.akashkulkarni.workers.dev"
+export const backend: string = "https://backend.akashkulkarni.workers.dev"

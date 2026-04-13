@@ -33,11 +33,11 @@ function Navbar() {
       }
     }, [])
   return (
-    <div className='py-4 w-full flex justify-between items-center bg-gray-200 h-[10vh] md:px-4 px-2 '>
-    <div className='log text-3xl font-bold font-sans text-center'>Blogging</div>
-    <div className="flex justify-end items-center">
-   <div className="hidden sm:block"> <Profile username={username} fullname={fullname} id={id} /></div>
-    <button className='w-full bg-blue-500 hover:bg-blue-600 p-1 rounded-md md:px-4 md:py-2 text-white font-mono font-semibold text-xl transition-colors duration-150' onClick={()=>{
+    <div className='py-4 w-full flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 h-[10vh] md:px-8 px-4'>
+    <div className='text-3xl font-extrabold font-outfit text-primary-600 tracking-tight text-center cursor-pointer' onClick={() => navigate('/')}>Postly</div>
+    <div className="flex justify-end items-center gap-4">
+    <div className="hidden sm:block"> <Profile username={username} fullname={fullname} id={id} /></div>
+    <button className='bg-slate-100 hover:bg-slate-200 hover:text-red-500 rounded-full px-5 py-2 text-slate-700 font-inter font-medium text-sm transition-all duration-200' onClick={()=>{
       localStorage.removeItem('mediumtoken')
       navigate('/signin')
     }}>Log out</button>

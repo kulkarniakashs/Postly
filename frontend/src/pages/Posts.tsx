@@ -94,29 +94,26 @@ function Dashboard() {
   return (
     <div className='w-full h-full md:max-h-[90vh] overflow-auto bg-gray-100'>
     
-    <div className='text-3xl font-serif font-bold text-center py-2 sticky top-0 bg-gray-100'>
-      <div>Blogs</div>
-      <div className="mt-0 text-xs font-normal">
-                <div className="flex justify-center items-center p-1 gap-3">
-                    <button className="focus:border-blue-400 border-b-2 transition-colors duration-200" onClick={()=>{
-                        setAllpostshow(true)
-                        }}>All</button>
-                    <button className="focus:border-blue-400 border-b-2 transition-colors duration-200" onClick={()=>{
-                        setAllpostshow(false)
-                       // console.log(allpostshow);   
-                    } }>Following</button>
-                </div>
-            </div>
+    <div className='flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-8 sticky top-0 bg-slate-50/90 backdrop-blur-md z-10 border-b border-slate-200 mb-6'>
+      <div className='text-3xl font-outfit font-extrabold text-slate-800 tracking-tight'>Feed</div>
+      <div className="mt-4 md:mt-0 bg-slate-200/60 p-1.5 rounded-full flex gap-1 shadow-inner">
+          <button className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${allpostshow ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`} onClick={()=>{
+              setAllpostshow(true)
+              }}>All Posts</button>
+          <button className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${!allpostshow ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`} onClick={()=>{
+              setAllpostshow(false)
+          } }>Following</button>
+      </div>
     </div>
   
     
-    <div  className='w-full  flex flex-col items-start justify-center p-4 md:overflow-y-auto'>
+    <div  className='w-full  flex flex-col items-start justify-center px-4 md:px-8 pb-4 md:overflow-y-auto'>
       {allpostshow && (posts.length>=1? posts.map(post => {
         return <Blog key={post.id} id={post.id} title={post.title} content={post.content} username={post.username} fullname={post.fullname} authorid={post.authorid} date={post.date} size='overflow-hidden text-ellipsis line-clamp-4' />
-      }) : <div className='text-2xl font-serif font-semibold text-center'>No Blogs</div>)}
+      }) : <div className='text-xl text-slate-400 font-inter font-medium text-center w-full mt-10'>No Blogs Available</div>)}
       { !allpostshow && (followingPosts.length>=1 ? followingPosts.map(post => {
         return <Blog key={post.id} id={post.id} title={post.title} content={post.content} username={post.author.username} fullname={post.author.fullname} authorid={post.author.id} date={post.date} size='overflow-hidden text-ellipsis line-clamp-4' />
-      }) : <div className='text-2xl font-serif font-semibold text-center'>No Blogs</div>)}
+      }) : <div className='text-xl text-slate-400 font-inter font-medium text-center w-full mt-10'>No Blogs Available</div>)}
     </div>
     <div className='flex justify-around items-center m-2 '>
       {/* <button className='py-2 px-8 border-2  border-gray-500 foucs:border-black md:hidden'onClick={
@@ -126,7 +123,7 @@ function Dashboard() {
             targetDiv.scrollIntoView({ behavior: "smooth" });
           }
       }}>Create Post</button> */}
-      <button className='py-2 px-8 border-2 border-gray-500 foucs:border-black' onClick={
+      <button className='px-6 py-2 rounded-xl font-inter font-medium transition-all duration-200 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary-600 hover:border-primary-200 shadow-sm' onClick={
         ()=>{
           if(allpostshow) {if(page>2){
             setPage(page-1)
@@ -138,7 +135,7 @@ function Dashboard() {
           }
         }
       }>Previous</button>
-      <button className='py-2 px-8 border-2 border-gray-500 focus:border-black'
+      <button className='px-6 py-2 rounded-xl font-inter font-medium transition-all duration-200 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary-600 hover:border-primary-200 shadow-sm'
       onClick={
         ()=>{
           if(allpostshow){
