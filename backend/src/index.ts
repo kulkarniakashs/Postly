@@ -15,7 +15,9 @@ const app = new Hono<{
 app.use('/*', cors())
 
 app.get('/', (c) => {
-  const prisma = new PrismaClient().$extends(withAccelerate())
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL
+  }).$extends(withAccelerate())
   return c.text('Hello Hono!')
 })
 
@@ -52,7 +54,7 @@ app.post('/signup', async (c) => {
 app.post('/signin', async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL
-  })
+  }).$extends(withAccelerate())
   const data = await c.req.json()
   const { success } = signInSchema.safeParse(data);
   const response = await prisma.user.findFirst({

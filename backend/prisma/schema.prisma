@@ -14,6 +14,7 @@ model user {
   fullname String
   username String @unique
   password String
+  bio      String?
   posts    post[]
   followers follow[] @relation("userfollower")
   following follow[] @relation("userfollowing")

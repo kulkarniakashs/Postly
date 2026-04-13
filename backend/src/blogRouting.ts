@@ -14,7 +14,7 @@ blogRouter.post('/',async (c) => {
     console.log(("in blogrouter"));
     const prisma = new PrismaClient({
     datasourceUrl : c.env.DATABASE_URL
-  })
+  }).$extends(withAccelerate())
   let data = await c.req.json()
   const {success} = createBlogSchema.safeParse(data);
   if(!success){
@@ -166,16 +166,15 @@ blogRouter.get('/:id',async (c)=>{
     })
     if(blog){
     let authordetail = blog.author;
-    //@ts-ignore
-    blog = {
-      ...blog,
+    return c.json({
+      id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      date: blog.date,
       username : authordetail.username,
       fullname : authordetail.fullname,
       authorid : authordetail.id
-    }
-    //@ts-ignore
-    delete blog.author;
-    return c.json(blog)
+    })
     }
     return c.json({
       msg : "blog not found!"
