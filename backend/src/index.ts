@@ -1,18 +1,18 @@
 import { Hono } from 'hono'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import {PrismaClient} from "@prisma/client/edge"
-import {decode,sign,verify} from "hono/jwt"
+import { PrismaClient } from "@prisma/client/edge"
+import { decode, sign, verify } from "hono/jwt"
 import blogRouter from './blogRouting'
 import { cors } from 'hono/cors'
 import userRouter from './userRouter'
-import { signUPSchema ,signInSchema} from './types'
+import { signUPSchema, signInSchema } from './types'
 const app = new Hono<{
   Bindings: {
-    DATABASE_URL : string
-    JWTSEC : string
+    DATABASE_URL: string
+    JWTSEC: string
   }
 }>()
-app.use('/*',cors())
+app.use('/*', cors())
 
 app.get('/', (c) => {
   const prisma = new PrismaClient().$extends(withAccelerate())
@@ -21,115 +21,115 @@ app.get('/', (c) => {
 
 app.post('/signup', async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl : c.env.DATABASE_URL,
+    datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate())
-  let data =await  c.req.json();
-  const {success} = signUPSchema.safeParse(data);
-  if(!success){
+  let data = await c.req.json();
+  const { success, error } = signUPSchema.safeParse(data);
+  if (!success) {
     return c.json({
-      msg : "Inputs are incorrect"
+      msg: error.toString()
     })
   }
-  try{
-  let response = await prisma.user.create({
-    data:{
-      fullname : data.fullname,
-      username : data.username,
-      password : data.password
+  try {
+    let response = await prisma.user.create({
+      data: {
+        fullname: data.fullname,
+        username: data.username,
+        password: data.password
+      }
+    })
+    if (response) {
+      let token = await sign({ id: response.id }, c.env.JWTSEC)
+      return c.json({ token: token })
     }
-  })
-  if(response){
-    let token =await sign({id:response.id},c.env.JWTSEC)
-    return c.json({token:token})
-}
-}
-catch(e){
-  console.log("THERE IS ERROR");
-  console.log(e);
-  return c.text(JSON.stringify(e))
-}
+  }
+  catch (e) {
+    console.log("THERE IS ERROR");
+    console.log(e);
+    return c.text(JSON.stringify(e))
+  }
 })
 app.post('/signin', async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl : c.env.DATABASE_URL
+    datasourceUrl: c.env.DATABASE_URL
   })
-  const data =await  c.req.json()
-  const {success} = signInSchema.safeParse(data);
+  const data = await c.req.json()
+  const { success } = signInSchema.safeParse(data);
   const response = await prisma.user.findFirst({
-    where:{
+    where: {
       username: data.username,
       password: data.password
     },
-    select : {
+    select: {
       id: true
     }
   })
-   if(response){
-  let token =await sign({id:response.id},c.env.JWTSEC)
-   return c.json({token:token})
-    }
- return c.json({
-  msg : "user not available"
- })
+  if (response) {
+    let token = await sign({ id: response.id }, c.env.JWTSEC)
+    return c.json({ token: token })
+  }
+  return c.json({
+    msg: "user not available"
+  })
 })
 
 
 
 
-app.use('/user/*',async (c,next)=>{
-  let string =  c.req.header("authorization");
-  if(string === undefined){
-    return c.json({msg:"user does not exits"})
+app.use('/user/*', async (c, next) => {
+  let string = c.req.header("authorization");
+  if (string === undefined) {
+    return c.json({ msg: "user does not exits" })
   }
   let token = string?.split(" ");
-  if(token){
+  if (token) {
     //@ts-ignore
-    const verified =await verify(token[1],c.env.JWTSEC)
-    if(verified){
-      
+    const verified = await verify(token[1], c.env.JWTSEC)
+    if (verified) {
+
       const decoded = decode(token[1])
       console.log(decoded.payload);
-      
-      c.set('jwtPayload',decoded.payload.id)
+
+      c.set('jwtPayload', decoded.payload.id)
       await next()
     }
     c.json({
-      msg : "user does not exits"
+      msg: "user does not exits"
     })
   }
-  return c.json({msg : "user does not exits"})
+  return c.json({ msg: "user does not exits" })
 })
 
-app.route('/user',userRouter);
+app.route('/user', userRouter);
 
 
-app.use('/blog/*',async (c,next)=>{
+app.use('/blog/*', async (c, next) => {
   let string = c.req.header("authorization");
-  if(string === undefined){
+  if (string === undefined) {
     console.log("should be redirected");
-    
+
     return c.redirect('/signin')
   }
   let token = string?.split(" ");
-  if(token){
+  if (token) {
     //@ts-ignore
-    const verified =await verify(token[1],c.env.JWTSEC)
-    if(verified){
+    const verified = await verify(token[1], c.env.JWTSEC)
+    if (verified) {
       console.log("verified");
-      
+
       const decoded = decode(token[1])
       console.log(decoded.payload);
-      
-      c.set('jwtPayload',decoded.payload.id)
+
+      c.set('jwtPayload', decoded.payload.id)
       await next()
     }
     c.json({
-      msg : "User does not exitst"
+      msg: "User does not exitst"
     })
   }
   c.redirect('/signin')
 })
-app.route('/blog',blogRouter)
+app.route('/blog', blogRouter)
 // app.post('/blog',async (c) => {
 //   const prisma = new PrismaClient({
 //     datasourceUrl : c.env.DATABASE_URL
